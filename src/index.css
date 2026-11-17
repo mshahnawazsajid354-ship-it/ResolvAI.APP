@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased transition-colors duration-150;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  html:not(.dark), html.light {
+    color-scheme: light;
+  }
+  body {
+    @apply bg-slate-50 text-slate-900 font-sans antialiased transition-colors duration-150;
+    overflow-x: hidden;
+  }
+  .dark body, html.dark body, body.dark {
+    @apply bg-slate-950 text-slate-100;
+  }
+  .light body, html.light body, body.light {
+    @apply bg-slate-50 text-slate-900;
+  }
+}
