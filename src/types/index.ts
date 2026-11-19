@@ -266,6 +266,7 @@ export interface ProgressSummary {
 export type ActiveView = 
   | 'landing'
   | 'onboarding'
+  | 'auth'
   | 'dashboard'
   | 'gym'
   | 'practice'

@@ -13,6 +13,7 @@ export interface MobileMenuProps {
   onClose: () => void;
   activeView: ActiveView;
   onNavigate: (view: ActiveView) => void;
+  onOpenAuth?: (mode: 'signup' | 'login') => void;
   userProfile: UserProfile;
   progressSummary: ProgressSummary;
   onToggleHarshCritique: () => void;
@@ -28,6 +29,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   onClose,
   activeView,
   onNavigate,
+  onOpenAuth,
   userProfile,
   progressSummary,
   onToggleHarshCritique,
@@ -375,7 +377,13 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                 </button>
 
                 {/* Optional Google Auth */}
-                <AuthButton variant="mobile" />
+                <AuthButton
+                  variant="mobile"
+                  onOpenAuth={(m) => {
+                    onClose();
+                    onOpenAuth?.(m);
+                  }}
+                />
               </div>
             </div>
           </motion.aside>

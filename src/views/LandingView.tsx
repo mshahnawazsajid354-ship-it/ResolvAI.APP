@@ -13,21 +13,25 @@ import {
 interface LandingViewProps {
   onStartTraining: () => void;
   onEnterGym: () => void;
+  onOpenAuth?: (mode: 'signup' | 'login') => void;
   hasExistingSession: boolean;
   productName: string;
   theme?: 'light' | 'dark';
   onSetTheme?: (theme: 'light' | 'dark') => void;
   onToggleTheme?: () => void;
+  isAuthConfigured?: boolean;
 }
 
 export const LandingView: React.FC<LandingViewProps> = ({
   onStartTraining,
   onEnterGym,
+  onOpenAuth,
   hasExistingSession,
   productName,
   theme = 'light',
   onSetTheme,
   onToggleTheme,
+  isAuthConfigured = false,
 }) => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-blue-100 selection:text-blue-900 transition-colors">
@@ -88,11 +92,22 @@ export const LandingView: React.FC<LandingViewProps> = ({
               Resume practice →
             </button>
           )}
+
+          {isAuthConfigured && onOpenAuth && (
+            <button
+              type="button"
+              onClick={() => onOpenAuth('login')}
+              className="px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
+              Log in
+            </button>
+          )}
+
           <button
             onClick={onStartTraining}
             className="px-3.5 sm:px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-1.5"
           >
-            <span>Start training</span>
+            <span>Get started</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -122,7 +137,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 onClick={onStartTraining}
                 className="w-full sm:w-auto px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-semibold shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/25 transition-all inline-flex items-center justify-center gap-2"
               >
-                <span>Start training</span>
+                <span>Get started</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 

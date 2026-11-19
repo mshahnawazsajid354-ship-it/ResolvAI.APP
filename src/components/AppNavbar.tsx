@@ -18,6 +18,7 @@ import { AuthButton } from './AuthButton';
 interface AppNavbarProps {
   activeView: ActiveView;
   onNavigate: (view: ActiveView) => void;
+  onOpenAuth?: (mode: 'signup' | 'login') => void;
   productName: string;
   userProfile: UserProfile;
   progressSummary: ProgressSummary;
@@ -30,6 +31,7 @@ interface AppNavbarProps {
 export const AppNavbar: React.FC<AppNavbarProps> = ({
   activeView,
   onNavigate,
+  onOpenAuth,
   productName,
   userProfile,
   progressSummary,
@@ -178,7 +180,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
             </button>
 
             {/* Optional Google Auth */}
-            <AuthButton variant="desktop" />
+            <AuthButton variant="desktop" onOpenAuth={onOpenAuth} />
           </div>
 
           {/* Right: Hamburger Menu Button for Narrow Screens (< 1280px) */}
@@ -204,6 +206,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
         onClose={() => setIsMobileMenuOpen(false)}
         activeView={activeView}
         onNavigate={onNavigate}
+        onOpenAuth={onOpenAuth}
         userProfile={userProfile}
         progressSummary={progressSummary}
         onToggleHarshCritique={onToggleHarshCritique}

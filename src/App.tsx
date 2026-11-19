@@ -14,6 +14,7 @@ import { aiExpertService } from './services/aiExpert';
 import { AppNavbar } from './components/AppNavbar';
 import { LandingView } from './views/LandingView';
 import { OnboardingView } from './views/OnboardingView';
+import { AuthScreen } from './components/AuthScreen';
 import { DashboardView } from './views/DashboardView';
 import { GymView } from './views/GymView';
 import { ProgressView } from './views/ProgressView';
@@ -24,10 +25,14 @@ import { EvaluationView } from './components/EvaluationView';
 import { DrillModal } from './components/DrillModal';
 import { ReflectionModal } from './components/ReflectionModal';
 import { AmbientBackground } from './components/AmbientBackground';
+import { useAuth } from './context/AuthContext';
 
 export function App() {
+  const { user, isConfigured: isAuthConfigured } = useAuth();
   // Application State
   const [activeView, setActiveView] = useState<ActiveView>('landing');
+  const [previousView, setPreviousView] = useState<ActiveView>('landing');
+  const [authMode, setAuthMode] = useState<'signup' | 'login'>('signup');
   const [productName, setProductName] = useState<string>('ResolvAI');
   const [userProfile, setUserProfile] = useState<UserProfile>(DEFAULT_USER_PROFILE);
   const [sessions, setSessions] = useState<PracticeSession[]>([]);
@@ -90,6 +95,57 @@ export function App() {
   const handleToggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
     handleSetTheme(next);
+  };
+
+  // Automatic routing upon successful sign-in
+  useEffect(() => {
+    if (user && activeView === 'auth') {
+      const profile = storageService.getUserProfile();
+      if (profile.onboardingCompleted) {
+        setActiveView('dashboard');
+      } else {
+        setActiveView('onboarding');
+      }
+    }
+  }, [user, activeView]);
+
+  const handleOpenAuth = (mode: 'signup' | 'login') => {
+    setAuthMode(mode);
+    setPreviousView(activeView);
+    setActiveView('auth');
+  };
+
+  const handleStartTrainingFromLanding = () => {
+    const isSkipped = localStorage.getItem('product_one_auth_skipped') === 'true';
+    const profile = storageService.getUserProfile();
+    const hasProfile = profile.onboardingCompleted || (profile.displayName && profile.displayName !== 'Practitioner');
+
+    if (!isAuthConfigured || user || isSkipped || hasProfile) {
+      if (profile.onboardingCompleted) {
+        setActiveView('dashboard');
+      } else {
+        setActiveView('onboarding');
+      }
+      return;
+    }
+
+    handleOpenAuth('signup');
+  };
+
+  const handleSkipAuth = () => {
+    try {
+      localStorage.setItem('product_one_auth_skipped', 'true');
+    } catch {}
+    const profile = storageService.getUserProfile();
+    if (profile.onboardingCompleted) {
+      setActiveView('dashboard');
+    } else {
+      setActiveView('onboarding');
+    }
+  };
+
+  const handleBackFromAuth = () => {
+    setActiveView(previousView === 'auth' ? 'landing' : previousView);
   };
 
   // Practice & Evaluation Context
@@ -399,13 +455,26 @@ export function App() {
         {/* 1. Landing View (Full Screen) */}
         {activeView === 'landing' && (
           <LandingView
-            onStartTraining={() => setActiveView('onboarding')}
+            onStartTraining={handleStartTrainingFromLanding}
             onEnterGym={() => setActiveView('dashboard')}
+            onOpenAuth={handleOpenAuth}
             hasExistingSession={sessions.length > 0}
             productName={productName}
             theme={theme}
             onSetTheme={handleSetTheme}
             onToggleTheme={handleToggleTheme}
+            isAuthConfigured={isAuthConfigured}
+          />
+        )}
+
+        {/* 1b. Authentication View (Sign Up / Log In) */}
+        {activeView === 'auth' && (
+          <AuthScreen
+            mode={authMode}
+            onSwitchMode={(m) => setAuthMode(m)}
+            onSkip={handleSkipAuth}
+            onBack={handleBackFromAuth}
+            theme={theme}
           />
         )}
 
@@ -422,11 +491,12 @@ export function App() {
       )}
 
       {/* 3. Core App Experience with Top Navbar */}
-      {activeView !== 'landing' && activeView !== 'onboarding' && (
+      {activeView !== 'landing' && activeView !== 'onboarding' && activeView !== 'auth' && (
         <>
           <AppNavbar
             activeView={activeView}
             onNavigate={handleNavigate}
+            onOpenAuth={handleOpenAuth}
             productName={productName}
             userProfile={userProfile}
             progressSummary={progressSummary}
