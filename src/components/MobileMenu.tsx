@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion, type Variants } from 'framer
 import { X, Flame, Sun, Moon, Settings } from 'lucide-react';
 import { ActiveView, UserProfile, ProgressSummary } from '../types';
 import { Logo } from './Logo';
+import { AuthButton } from './AuthButton';
 
 export const HAMBURGER_SIDE: 'right' | 'left' = 'right';
 
@@ -372,6 +373,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                   </div>
                   <span className="text-slate-500">→</span>
                 </button>
+
+                {/* Optional Google Auth */}
+                <AuthButton variant="mobile" />
               </div>
             </div>
           </motion.aside>

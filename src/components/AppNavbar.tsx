@@ -13,6 +13,7 @@ import {
 import { ActiveView, UserProfile, ProgressSummary } from '../types';
 import { Logo } from './Logo';
 import { MobileMenu } from './MobileMenu';
+import { AuthButton } from './AuthButton';
 
 interface AppNavbarProps {
   activeView: ActiveView;
@@ -175,6 +176,9 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
             >
               <Settings className="w-4 h-4" />
             </button>
+
+            {/* Optional Google Auth */}
+            <AuthButton variant="desktop" />
           </div>
 
           {/* Right: Hamburger Menu Button for Narrow Screens (< 1280px) */}
