@@ -58,12 +58,12 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
     <>
       {/* Top Sticky Header for Desktop, Tablet & Mobile */}
       <header className="sticky top-0 z-40 w-full bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-300 dark:border-slate-800/90 transition-colors">
-        <div className="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
           {/* Left: Brand Logo Placeholder & Title */}
-          <div className="flex items-center gap-2 sm:gap-6 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <button
               onClick={() => onNavigate('dashboard')}
-              className="flex items-center gap-2 sm:gap-2.5 text-left group"
+              className="flex items-center gap-2 sm:gap-2.5 text-left group shrink-0"
               title="ResolvAI Dashboard"
             >
               {/* Brand logo */}
@@ -81,14 +81,14 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
             </button>
 
             {/* Center Desktop Navigation Pills (Hidden below 1280px / xl) */}
-            <nav className="hidden xl:flex items-center gap-1">
+            <nav className="hidden xl:flex items-center gap-0.5 2xl:gap-1">
               {navLinks.map((item) => {
                 const isActive = activeView === item.view || (activeView === 'practice' && item.view === 'dashboard');
                 return (
                   <button
                     key={item.view}
                     onClick={() => onNavigate(item.view)}
-                    className={`px-3 py-1.5 lg:px-3.5 lg:py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                    className={`px-2.5 py-1.5 2xl:px-3.5 2xl:py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                       isActive
                         ? 'bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 font-bold'
                         : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-900'
