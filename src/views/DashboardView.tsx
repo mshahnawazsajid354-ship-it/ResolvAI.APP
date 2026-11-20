@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { UserProfile, ProgressSummary, Topic, PracticeSession } from '../types';
 import { isSessionCompleted, isSessionInProgress } from '../services/storage';
+import { useAuth } from '../context/AuthContext';
 
 interface DashboardViewProps {
   userProfile: UserProfile;
@@ -33,6 +34,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onNavigateToVault,
   onReopenSession,
 }) => {
+  const { user } = useAuth();
   const isNewUser = progressSummary.daysCompleted === 0;
 
   // Map completed topics
@@ -212,7 +214,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* 5. Minimal Privacy Guarantee Note */}
       <div className="flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-500 text-center pt-2">
         <ShieldCheck className="w-4 h-4 text-slate-500 dark:text-slate-500" />
-        <span>Personal practice stays private to this browser. No sign-up required.</span>
+        <span>
+          {user
+            ? 'Your practice is saved on this device.'
+            : 'Your practice is saved on this device. No sign-up required.'}
+        </span>
       </div>
     </div>
   );

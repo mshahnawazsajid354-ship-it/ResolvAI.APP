@@ -76,13 +76,13 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
               {isSignUp
-                ? 'Save your practice sessions and progress across visits.'
-                : 'Sign in to access your saved progress and practice history.'}
+                ? 'Sign up with Google to get started. It takes one click.'
+                : 'Welcome back. Sign in with Google to continue.'}
             </p>
           </div>
 
-          {/* Primary Action: Official Google Sign-In / Sign-Up Button */}
-          <div>
+          {/* Primary Action: Official Google Sign-In / Sign-Up Button & Consent Line */}
+          <div className="space-y-3">
             <button
               type="button"
               onClick={signInWithGoogle}
@@ -100,6 +100,18 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                 {isSignUp ? 'Sign up with Google' : 'Sign in with Google'}
               </span>
             </button>
+
+            <p className="text-xs text-slate-500 dark:text-slate-400 text-center leading-relaxed">
+              By continuing, you agree to our{' '}
+              <a
+                href="/privacy.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-slate-700 dark:hover:text-slate-200"
+              >
+                Privacy Policy
+              </a>.
+            </p>
           </div>
 
           {/* Secondary Actions: Skip (only on sign up) and Mode Switcher */}
