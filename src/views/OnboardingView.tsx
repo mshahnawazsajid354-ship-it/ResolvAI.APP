@@ -17,6 +17,7 @@ interface OnboardingViewProps {
   theme?: 'light' | 'dark';
   onSetTheme?: (theme: 'light' | 'dark') => void;
   onToggleTheme?: () => void;
+  googleDisplayName?: string;
 }
 
 export const OnboardingView: React.FC<OnboardingViewProps> = ({
@@ -26,13 +27,17 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
   theme = 'light',
   onSetTheme,
   onToggleTheme,
+  googleDisplayName,
 }) => {
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
-  // Form State
-  const [displayName, setDisplayName] = useState(
-    initialProfile.displayName === 'Practitioner' ? '' : initialProfile.displayName
-  );
+  // Form State - prefill with googleDisplayName if initialProfile is empty or 'Practitioner'
+  const [displayName, setDisplayName] = useState(() => {
+    if (initialProfile.displayName && initialProfile.displayName !== 'Practitioner') {
+      return initialProfile.displayName;
+    }
+    return googleDisplayName || '';
+  });
 
   // 6 Core Goals from Emergent
   const [selectedGoals, setSelectedGoals] = useState<string[]>([

@@ -28,7 +28,7 @@ import { AmbientBackground } from './components/AmbientBackground';
 import { useAuth } from './context/AuthContext';
 
 export function App() {
-  const { user, isConfigured: isAuthConfigured } = useAuth();
+  const { user, displayName: googleDisplayName, isConfigured: isAuthConfigured, signOut } = useAuth();
   // Application State
   const [activeView, setActiveView] = useState<ActiveView>('landing');
   const [previousView, setPreviousView] = useState<ActiveView>('landing');
@@ -97,25 +97,42 @@ export function App() {
     handleSetTheme(next);
   };
 
-  // Automatic routing upon successful sign-in
+  // Automatic routing upon successful sign-in & one-time Google name sync
   useEffect(() => {
     let isPending = false;
     try {
       isPending = sessionStorage.getItem('product_one_auth_pending') === '1';
     } catch {}
 
-    if (user && (activeView === 'auth' || (activeView === 'landing' && isPending))) {
+    if (user) {
       const profile = storageService.getUserProfile();
-      if (profile.onboardingCompleted) {
-        setActiveView('dashboard');
-      } else {
-        setActiveView('onboarding');
+
+      // One-time update if signed-in person has completed onboarding but displayName is still default "Practitioner"
+      if (profile.onboardingCompleted && profile.displayName === 'Practitioner' && googleDisplayName) {
+        const updated = storageService.saveUserProfile({ displayName: googleDisplayName });
+        setUserProfile(updated);
       }
-      try {
-        sessionStorage.removeItem('product_one_auth_pending');
-      } catch {}
+
+      if (activeView === 'auth' || (activeView === 'landing' && isPending)) {
+        if (profile.onboardingCompleted) {
+          setActiveView('dashboard');
+        } else {
+          setActiveView('onboarding');
+        }
+        try {
+          sessionStorage.removeItem('product_one_auth_pending');
+        } catch {}
+      }
     }
-  }, [user, activeView]);
+  }, [user, activeView, googleDisplayName]);
+
+  const handleSignOut = async () => {
+    try {
+      sessionStorage.removeItem('product_one_auth_pending');
+    } catch {}
+    await signOut();
+    setActiveView('landing');
+  };
 
   const handleOpenAuth = (mode: 'signup' | 'login') => {
     setAuthMode(mode);
@@ -124,11 +141,10 @@ export function App() {
   };
 
   const handleStartTrainingFromLanding = () => {
-    const isSkipped = localStorage.getItem('product_one_auth_skipped') === 'true';
     const profile = storageService.getUserProfile();
-    const hasProfile = profile.onboardingCompleted || (profile.displayName && profile.displayName !== 'Practitioner');
 
-    if (!isAuthConfigured || user || isSkipped || hasProfile) {
+    // Final rule: skip auth screen only if Supabase not configured, OR user is signed in, OR onboardingCompleted is true
+    if (!isAuthConfigured || user || profile.onboardingCompleted) {
       if (profile.onboardingCompleted) {
         setActiveView('dashboard');
       } else {
@@ -496,6 +512,7 @@ export function App() {
           theme={theme}
           onSetTheme={handleSetTheme}
           onToggleTheme={handleToggleTheme}
+          googleDisplayName={googleDisplayName}
         />
       )}
 
@@ -506,6 +523,7 @@ export function App() {
             activeView={activeView}
             onNavigate={handleNavigate}
             onOpenAuth={handleOpenAuth}
+            onSignOut={handleSignOut}
             productName={productName}
             userProfile={userProfile}
             progressSummary={progressSummary}

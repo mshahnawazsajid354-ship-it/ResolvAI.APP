@@ -14,6 +14,7 @@ export interface MobileMenuProps {
   activeView: ActiveView;
   onNavigate: (view: ActiveView) => void;
   onOpenAuth?: (mode: 'signup' | 'login') => void;
+  onSignOut?: () => void;
   userProfile: UserProfile;
   progressSummary: ProgressSummary;
   onToggleHarshCritique: () => void;
@@ -30,6 +31,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   activeView,
   onNavigate,
   onOpenAuth,
+  onSignOut,
   userProfile,
   progressSummary,
   onToggleHarshCritique,
@@ -382,6 +384,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                   onOpenAuth={(m) => {
                     onClose();
                     onOpenAuth?.(m);
+                  }}
+                  onSignOut={() => {
+                    onClose();
+                    onSignOut?.();
                   }}
                 />
               </div>

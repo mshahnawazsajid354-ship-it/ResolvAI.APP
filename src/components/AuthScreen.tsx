@@ -82,7 +82,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
           </div>
 
           {/* Primary Action: Official Google Sign-In / Sign-Up Button */}
-          <div className="space-y-2.5">
+          <div>
             <button
               type="button"
               onClick={signInWithGoogle}
@@ -100,12 +100,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                 {isSignUp ? 'Sign up with Google' : 'Sign in with Google'}
               </span>
             </button>
-
-            {isSignUp && (
-              <p className="text-xs text-slate-500 dark:text-slate-400 text-center leading-relaxed">
-                We save your email only. We never sell it.
-              </p>
-            )}
           </div>
 
           {/* Secondary Actions: Skip (only on sign up) and Mode Switcher */}

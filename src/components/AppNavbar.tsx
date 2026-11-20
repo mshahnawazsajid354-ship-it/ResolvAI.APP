@@ -19,6 +19,7 @@ interface AppNavbarProps {
   activeView: ActiveView;
   onNavigate: (view: ActiveView) => void;
   onOpenAuth?: (mode: 'signup' | 'login') => void;
+  onSignOut?: () => void;
   productName: string;
   userProfile: UserProfile;
   progressSummary: ProgressSummary;
@@ -32,6 +33,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
   activeView,
   onNavigate,
   onOpenAuth,
+  onSignOut,
   productName,
   userProfile,
   progressSummary,
@@ -180,7 +182,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
             </button>
 
             {/* Optional Google Auth */}
-            <AuthButton variant="desktop" onOpenAuth={onOpenAuth} />
+            <AuthButton variant="desktop" onOpenAuth={onOpenAuth} onSignOut={onSignOut} />
           </div>
 
           {/* Right: Hamburger Menu Button for Narrow Screens (< 1280px) */}
@@ -207,6 +209,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
         activeView={activeView}
         onNavigate={onNavigate}
         onOpenAuth={onOpenAuth}
+        onSignOut={onSignOut}
         userProfile={userProfile}
         progressSummary={progressSummary}
         onToggleHarshCritique={onToggleHarshCritique}

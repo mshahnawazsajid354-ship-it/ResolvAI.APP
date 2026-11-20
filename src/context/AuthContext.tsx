@@ -4,6 +4,8 @@ import { supabase } from '../services/supabaseClient';
 
 interface AuthContextType {
   user: User | null;
+  displayName: string;
+  email: string;
   loading: boolean;
   isConfigured: boolean;
   signInWithGoogle: () => Promise<void>;
@@ -12,6 +14,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  displayName: '',
+  email: '',
   loading: false,
   isConfigured: false,
   signInWithGoogle: async () => {},
@@ -86,16 +90,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     if (!supabase) return;
     try {
+      try {
+        sessionStorage.removeItem('product_one_auth_pending');
+      } catch {}
       await supabase.auth.signOut();
     } catch (err) {
       console.error('Error signing out:', err);
     }
   };
 
+  const displayName =
+    (user?.user_metadata?.full_name as string) ||
+    (user?.user_metadata?.name as string) ||
+    (user?.email ? user.email.split('@')[0] : '') ||
+    '';
+
+  const email = user?.email || '';
+
   return (
     <AuthContext.Provider
       value={{
         user,
+        displayName,
+        email,
         loading,
         isConfigured,
         signInWithGoogle,
