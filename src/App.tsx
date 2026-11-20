@@ -99,13 +99,21 @@ export function App() {
 
   // Automatic routing upon successful sign-in
   useEffect(() => {
-    if (user && activeView === 'auth') {
+    let isPending = false;
+    try {
+      isPending = sessionStorage.getItem('product_one_auth_pending') === '1';
+    } catch {}
+
+    if (user && (activeView === 'auth' || (activeView === 'landing' && isPending))) {
       const profile = storageService.getUserProfile();
       if (profile.onboardingCompleted) {
         setActiveView('dashboard');
       } else {
         setActiveView('onboarding');
       }
+      try {
+        sessionStorage.removeItem('product_one_auth_pending');
+      } catch {}
     }
   }, [user, activeView]);
 
@@ -464,6 +472,7 @@ export function App() {
             onSetTheme={handleSetTheme}
             onToggleTheme={handleToggleTheme}
             isAuthConfigured={isAuthConfigured}
+            isSignedIn={Boolean(user)}
           />
         )}
 

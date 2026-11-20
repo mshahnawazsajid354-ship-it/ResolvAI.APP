@@ -35,6 +35,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (isMounted) {
         setUser(session?.user ?? null);
         setLoading(false);
+        if (!session?.user) {
+          try {
+            sessionStorage.removeItem('product_one_auth_pending');
+          } catch {}
+        }
       }
     });
 
@@ -56,13 +61,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithGoogle = async () => {
     if (!supabase) return;
     try {
-      await supabase.auth.signInWithOAuth({
+      sessionStorage.setItem('product_one_auth_pending', '1');
+    } catch {}
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: window.location.origin,
         },
       });
+      if (error) {
+        try {
+          sessionStorage.removeItem('product_one_auth_pending');
+        } catch {}
+      }
     } catch (err) {
+      try {
+        sessionStorage.removeItem('product_one_auth_pending');
+      } catch {}
       console.error('Error signing in with Google:', err);
     }
   };

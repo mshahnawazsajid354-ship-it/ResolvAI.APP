@@ -20,6 +20,7 @@ interface LandingViewProps {
   onSetTheme?: (theme: 'light' | 'dark') => void;
   onToggleTheme?: () => void;
   isAuthConfigured?: boolean;
+  isSignedIn?: boolean;
 }
 
 export const LandingView: React.FC<LandingViewProps> = ({
@@ -32,6 +33,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
   onSetTheme,
   onToggleTheme,
   isAuthConfigured = false,
+  isSignedIn = false,
 }) => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-blue-100 selection:text-blue-900 transition-colors">
@@ -93,7 +95,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </button>
           )}
 
-          {isAuthConfigured && onOpenAuth && (
+          {isAuthConfigured && onOpenAuth && !isSignedIn && (
             <button
               type="button"
               onClick={() => onOpenAuth('login')}
